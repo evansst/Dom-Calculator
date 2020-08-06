@@ -41,11 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const appendToScreen = (input) => {
-    input ? $screen.textContent = $screen.textContent + input : ''; 
-  };
-
-  const isAButton = (button) => {
-    return !!isEquals(button) || !!filterButton(button);
+    $screen.textContent = input ? $screen.textContent + input : ''; 
   };
 
   const isClear = (button) => {
