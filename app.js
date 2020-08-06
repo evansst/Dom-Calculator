@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keydown', (event) => {
-    const key = isClear(event.key) ? clearScreen() : event.key;
-    if(isAButton(key)) { pushButton(key); }
+    isClear(event.key) ? clearScreen() : pushButton(event.key);
   });  
 
 
@@ -42,11 +41,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const appendToScreen = (input) => {
-    $screen.textContent = $screen.textContent + input;
+    input ? $screen.textContent = $screen.textContent + input : ''; 
   };
 
   const isAButton = (button) => {
-    return isEquals(button) || filterButton(button);
+    return !!isEquals(button) || !!filterButton(button);
   };
 
   const isClear = (button) => {
@@ -58,15 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const filterButton = (button) => {
-    return isNumber(button);
+    return isNumber(button) || isDivision(button) || isMulitplication(button);
   };
 
   const isNumber = (button) => {
-    return ('0123456789+-*/').includes(button)? button : isDivision(button);
+    return ('0123456789+-*/').includes(button)? button : false;
   };
 
   const isDivision = (button) => {
-    return (button === '÷') ? '/' : isMulitplication(button);
+    return (button === '÷') ? '/' : false;
   };
 
   const isMulitplication = (button) => {
