@@ -4,82 +4,73 @@ document.addEventListener('DOMContentLoaded', () => {
   const $buttons = document.querySelectorAll('span');
   
   $buttons.forEach($button => {
-    $button.addEventListener('click', (event) => {
-      const button = $button.textContent;
-      
-      pushButton(button);
+    $button.addEventListener('click', () => {      
+      isClear($button.textContent) ? clearScreen() : pushButton($button.textContent);
     });
-    
   });
 
   document.addEventListener('keydown', (event) => {
-    const key = event.key;
-
-    pushButton(key);
+    const key = isClear(event.key) ? clearScreen() : event.key;
+    if(isAButton(key)) { pushButton(key); }
   });  
 
-  function pushButton(button) {
-    if (isClear(button)) {
-      clear();
-    } else {
-      if (error()) {
-        return '';
-      } else if(isEquals(button)) {
-        equals($screen.textContent);
-      } else {
-        appendToScreen(isAButton(button));
-      }
+
+  const pushButton = (button) => {
+    if (!error()) {
+      isEquals(button) ? evaluate() : appendToScreen(filterButton(button));
     }
-  }
+  };
 
-  function error() {
-    return ($screen.textContent === 'Error') ? 
-      true : 
-      false;
-  }
+  const error = () => {
+    return ($screen.textContent === 'Error');
+  };
 
-  function clear() {
+  const clearScreen = () => {
     $screen.textContent = '';
-  }
+    return false;
+  };
   
-  function equals(screen) {
-    clear();
+  const evaluate = () => {
+    const screen = $screen.textContent;
+    clearScreen();
    
     try { 
       appendToScreen(eval(screen));
     } catch { 
       appendToScreen('Error'); 
     }
-    
-  }
+  };
   
-  function appendToScreen(input) {
-    if(input) {
-      $screen.textContent = $screen.textContent + input;
-    }
-  }
+  const appendToScreen = (input) => {
+    $screen.textContent = $screen.textContent + input;
+  };
 
-  function isClear(button) {
-    return (button === 'C' || button === 'Escape' || button === 'Clear');
-  }
+  const isAButton = (button) => {
+    return isEquals(button) || filterButton(button);
+  };
 
-  function isEquals(button) {
+  const isClear = (button) => {
+    return (button === 'C' || button === 'Escape' || button === 'Clear') ? 'C' : false;
+  };
+  
+  const isEquals = (button) => {
     return (button === '=' || button === 'Enter');
-  }
-
-  function isAButton(input) {
-    if (('0123456789+-*/x÷.').includes(input)){
-      if (input === 'x') { input = '*'; }
-      if (input === '÷') { input = '/'; }
-
-      return input;
-    } else {
-      return false;
-    }
-  }
+  };
   
-  function doMath(string) {
-    
-  }
+  const filterButton = (button) => {
+    return isNumber(button);
+  };
+
+  const isNumber = (button) => {
+    return ('0123456789+-*/').includes(button)? button : isDivision(button);
+  };
+
+  const isDivision = (button) => {
+    return (button === '÷') ? '/' : isMulitplication(button);
+  };
+
+  const isMulitplication = (button) => {
+    return (button === 'x') ? '*' : false;
+  };
 
 });
