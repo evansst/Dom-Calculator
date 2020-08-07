@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const isNumber = (button) => {
-    return ('0123456789+-*/÷x').includes(button)? button : false;
+    return ('0123456789+-*/').includes(button)? button : false;
+    // return ('0123456789+-*/÷x').includes(button)? button : false;
   };
 
   const isDivision = (button) => {
