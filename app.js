@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
    
     try { 
       appendToScreen(eval(expression));
-      // appendToScreen(doMath(expression));
+
     } catch { 
       appendToScreen('Error'); 
     }
@@ -65,24 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const isOperator = (input) => {
-    return (isAddition(input) || isSubtraction(input) || isDivision(input) || isMulitplication(input));
+    const operators = {
+      '+': '+',
+      '-': '-',
+      'x': '*',
+      '*': '*',
+      '/': '/',
+      '÷': '/'
+    };
+    return operators[input];
   };
 
-  const isAddition = (input) => {
-    return (input === '+') ? input : false;
-  };
-
-  const isSubtraction = (input) => {
-    return (input === '-') ? input : false;
-  };
-
-  const isDivision = (input) => {
-    return (input === '÷' || input === '/') ? '/' : false;
-  };
-
-  const isMulitplication = (input) => {
-    return (input === 'x' || input === '*') ? '*' : false;
-  };
 
   // const doMath = (string) => {
   //   const array = string.match(/[^\d()]+|[\d.]+/g);
@@ -103,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
   //     default:
   //       return array.join();
   //   }
+  // };
+
+  // const doMath = (string) => {
+  //   return Function(`return (${string})`)();
   // };
 
 });
