@@ -33,20 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const evaluate = () => {
-    const screen = $screen.textContent;
+    const expression = $screen.textContent;
     clearScreen();
    
     try { 
-      appendToScreen(eval(screen));
-      // appendToScreen(doMath(screen));
+      appendToScreen(eval(expression));
+      // appendToScreen(doMath(expression));
     } catch { 
       appendToScreen('Error'); 
     }
   };
   
   const appendToScreen = (input) => {
-    if (!(input === false || input == undefined)) {
-      $screen.textContent = $screen.textContent + input; }
+    if (input !== false && input !== undefined) { $screen.textContent = $screen.textContent + input; }
   };
 
   const isClear = (button) => {
@@ -58,21 +57,31 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const filterButton = (button) => {
-    return isNumber(button) || isDivision(button) || isMulitplication(button);
-    // return isNumber(button);
+    return isNumber(button) || isOperator(button);
   };
 
-  const isNumber = (button) => {
-    return ('0123456789+-*/').includes(button)? button : false;
-    // return ('0123456789+-*/÷x').includes(button)? button : false;
+  const isNumber = (input) => {
+    return ('0123456789').includes(input) ? input : false;
   };
 
-  const isDivision = (button) => {
-    return (button === '÷') ? '/' : false;
+  const isOperator = (input) => {
+    return (isAddition(input) || isSubtraction(input) || isDivision(input) || isMulitplication(input));
   };
 
-  const isMulitplication = (button) => {
-    return (button === 'x') ? '*' : false;
+  const isAddition = (input) => {
+    return (input === '+') ? input : false;
+  };
+
+  const isSubtraction = (input) => {
+    return (input === '-') ? input : false;
+  };
+
+  const isDivision = (input) => {
+    return (input === '÷' || input === '/') ? '/' : false;
+  };
+
+  const isMulitplication = (input) => {
+    return (input === 'x' || input === '*') ? '*' : false;
   };
 
   // const doMath = (string) => {
