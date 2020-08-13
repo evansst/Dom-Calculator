@@ -34,22 +34,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const expression = $screen.textContent;
     clearScreen();
    
-    try { 
-      appendToScreen(doMath(expression));
-    } catch { 
-      appendToScreen('Error'); 
-    }
+    try { appendToScreen(doMath(expression)); }
+    catch { appendToScreen('Error'); }
   };
   
   const appendToScreen = (input) => {
     if (input !== false && input !== undefined) { $screen.textContent = $screen.textContent + input; }
   };
 
-  const isClear = (button) => (button === 'C' || button === 'Escape' || button === 'Clear') ? 'C' : false;
+  const filterButton = (button) => isNumber(button) || isOperator(button);
+
+  const isClear = (button) => (button === 'C' || button === 'Escape' || button === 'Clear');
   
   const isEquals = (button) => (button === '=' || button === 'Enter');
-  
-  const filterButton = (button) => isNumber(button) || isOperator(button);
 
   const isNumber = (input) => ('0123456789').includes(input) ? input : false;
 
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     return operators[input];
   };
-
 
   const doMath = (string) => {
     const expression = string.match(/[^\d()]+|[\d.]+/g);
