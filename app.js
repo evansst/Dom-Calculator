@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
   
-  const $screen = document.getElementById('screen');
+  const $screen = document.querySelector('#screen');
   const $buttons = document.querySelectorAll('span');
   
   $screen.style.display = 'flex';
   $screen.style.justifyContent = 'flex-end';
 
   $buttons.forEach($button => {
-    $button.addEventListener('click', () => {      
-      isClear($button.textContent) ? clearScreen() : pushButton($button.textContent);
-    });
+    $button.addEventListener('click', () => isClear($button.textContent)
+     ? clearScreen()
+     : pushButton($button.textContent));
   });
 
-  document.addEventListener('keydown', (event) => {
-    isClear(event.key) ? clearScreen() : pushButton(event.key);
-  });  
+  document.addEventListener('keydown', (event) => isClear(event.key)
+    ? clearScreen()
+    : pushButton(event.key));  
 
 
   const pushButton = (button) => {
@@ -23,13 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const error = () => {
-    return ($screen.textContent === 'Error');
-  };
+  const error = () => ($screen.textContent === 'Error');
 
   const clearScreen = () => {
     $screen.textContent = '';
-    return false;
+    // return false;
   };
   
   const evaluate = () => {
@@ -37,8 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearScreen();
    
     try { 
-      appendToScreen(eval(expression));
-
+      appendToScreen(doMath(expression));
     } catch { 
       appendToScreen('Error'); 
     }
@@ -48,21 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (input !== false && input !== undefined) { $screen.textContent = $screen.textContent + input; }
   };
 
-  const isClear = (button) => {
-    return (button === 'C' || button === 'Escape' || button === 'Clear') ? 'C' : false;
-  };
+  const isClear = (button) => (button === 'C' || button === 'Escape' || button === 'Clear') ? 'C' : false;
   
-  const isEquals = (button) => {
-    return (button === '=' || button === 'Enter');
-  };
+  const isEquals = (button) => (button === '=' || button === 'Enter');
   
-  const filterButton = (button) => {
-    return isNumber(button) || isOperator(button);
-  };
+  const filterButton = (button) => isNumber(button) || isOperator(button);
 
-  const isNumber = (input) => {
-    return ('0123456789').includes(input) ? input : false;
-  };
+  const isNumber = (input) => ('0123456789').includes(input) ? input : false;
 
   const isOperator = (input) => {
     const operators = {
@@ -77,29 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
 
-  // const doMath = (string) => {
-  //   const array = string.match(/[^\d()]+|[\d.]+/g);
+  const doMath = (string) => {
+    const expression = string.match(/[^\d()]+|[\d.]+/g);
 
-  //   if (array.length > 3) return 'Error';
-
-  //   switch(array[1]) {
-  //     case '+':
-  //       return +array[0] + +array[2];
-  //     case '-':
-  //       return +array[0] - +array[2];
-  //     case 'x':
-  //     case '*': 
-  //       return +array[0] * +array[2];
-  //     case '÷':
-  //     case '/':
-  //       return array[2] == 0 ? 'Error' : +array[0] / +array[2];
-  //     default:
-  //       return array.join();
-  //   }
-  // };
-
-  // const doMath = (string) => {
-  //   return Function(`return (${string})`)();
-  // };
-
+    const math = {
+      '+': (a, b) => { return +a + +b; },
+      '-': (a, b) => { return +a - +b; },
+      '*': (a, b) => { return +a * +b; },
+      '/': (a, b) => { return +a / +b; }
+    };
+    
+    return (expression.length > 3) ? 'Error' : math[expression[1]](expression[0], expression[2]);
+  };
 });
