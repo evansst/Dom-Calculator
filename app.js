@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     : pushButton(event.key));  
 
 
-  const pushButton = (button) => isEquals(button) ? evaluate() : appendToScreen(filterButton(button));
+  const pushButton = (button) => isEquals(button) ? evaluate() : appendToScreen(filtered(button));
 
   const error = () => ($screen.textContent === 'Error');
 
@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const appendToScreen = (input) => {
-    if (!error()) {
+    if (!error() && input) {
       $screen.textContent = $screen.textContent + input;
     }
   };
 
-  const filterButton = (button) => isNumber(button) || isOperator(button);
+  const filtered = (button) => isNumber(button) || isOperator(button);
 
   const isClear = (button) => (button === 'C' || button === 'Escape' || button === 'Clear');
   
