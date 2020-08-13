@@ -57,21 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
       'x': '*',
       '*': '*',
       '/': '/',
-      '÷': '/'
+      '÷': '/',
+      '.': '.'
     };
     return operators[input];
   };
 
   const doMath = (string) => {
-    const expression = string.match(/[^\d()]+|[\d.]+/g);
-
+    const [a, operator, b] = string.match(/[^\d()]+|[\d.]+/g);  // no idea how this regex works
     const math = {
       '+': (a, b) => { return +a + +b; },
       '-': (a, b) => { return +a - +b; },
       '*': (a, b) => { return +a * +b; },
       '/': (a, b) => { return +a / +b; }
     };
+
+    const result = math[operator](a, b);
     
-    return (expression.length > 3) ? 'Error' : math[expression[1]](expression[0], expression[2]);
+    return result.toString().substring(0,12);
   };
 });
