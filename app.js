@@ -17,18 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     : pushButton(event.key));  
 
 
-  const pushButton = (button) => {
-    if (!error()) {
-      isEquals(button) ? evaluate() : appendToScreen(filterButton(button));
-    }
-  };
+  const pushButton = (button) => isEquals(button) ? evaluate() : appendToScreen(filterButton(button));
 
   const error = () => ($screen.textContent === 'Error');
 
-  const clearScreen = () => {
-    $screen.textContent = '';
-    // return false;
-  };
+  const clearScreen = () => $screen.textContent = '';
   
   const evaluate = () => {
     const expression = $screen.textContent;
@@ -39,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   const appendToScreen = (input) => {
-    if (input !== false && input !== undefined) { $screen.textContent = $screen.textContent + input; }
+    if (!error()) {
+      $screen.textContent = $screen.textContent + input;
+    }
   };
 
   const filterButton = (button) => isNumber(button) || isOperator(button);
@@ -48,28 +43,32 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const isEquals = (button) => (button === '=' || button === 'Enter');
 
-  const isNumber = (input) => ('0123456789').includes(input) ? input : false;
+  const isNumber = (button) => ('0123456789').includes(button) ? button : false;
 
-  const isOperator = (input) => {
+  const isOperator = (button) => {
     const operators = {
       '+': '+',
       '-': '-',
-      'x': '*',
+      'x': 'x', 
       '*': '*',
       '/': '/',
-      '÷': '/',
+      '÷': '÷',
       '.': '.'
     };
-    return operators[input];
+
+    return operators[button];
   };
 
-  const doMath = (string) => {
-    const [a, operator, b] = string.match(/[^\d()]+|[\d.]+/g);  // no idea how this regex works
+  const doMath = (expression) => {
+    const [a, operator, b] = expression.match(/[^\d()]+|[\d.]+/g);  // no idea how this regex works
+
     const math = {
-      '+': (a, b) => { return +a + +b; },
-      '-': (a, b) => { return +a - +b; },
-      '*': (a, b) => { return +a * +b; },
-      '/': (a, b) => { return +a / +b; }
+      '+': (a, b) => +a + +b,
+      '-': (a, b) => +a - +b,
+      '*': (a, b) => +a * +b,
+      'x': (a, b) => +a * +b,
+      '/': (a, b) => +a / +b,
+      '÷': (a, b) => +a / +b
     };
 
     const result = math[operator](a, b);
