@@ -6,73 +6,61 @@ document.addEventListener('DOMContentLoaded', () => {
   $screen.style.display = 'flex';
   $screen.style.justifyContent = 'flex-end';
 
-  $buttons.forEach($button => {
-    $button.addEventListener('click', () => isClear($button.textContent)
-     ? clearScreen()
-     : pushButton($button.textContent));
-  });
+  $buttons.forEach((button) =>
+      button.addEventListener('click', ({target: { textContent }}) => push(textContent)));
 
-  document.addEventListener('keydown', (event) => isClear(event.key)
-    ? clearScreen()
-    : pushButton(event.key));  
+  document.addEventListener('keydown', ({key}) => push(key));
 
-
-  const pushButton = (button) => isEquals(button) ? evaluate() : appendToScreen(filtered(button));
-
-  const error = () => ($screen.textContent === 'Error');
-
-  const clearScreen = () => $screen.textContent = '';
+  const push = (button) => isClear(button) || isEquals(button) || isInput(button);
   
+  const noError = () => $screen.textContent !== 'Error';
+  const clearScreen = () => {
+    $screen.textContent = ''
+    return true
+  };
+
   const evaluate = () => {
     const expression = $screen.textContent;
     clearScreen();
    
-    try { appendToScreen(doMath(expression)); }
-    catch { appendToScreen('Error'); }
+    try { append(evaluated(expression)); }
+    catch { append('Error'); }
+    return true;
   };
-  
-  const appendToScreen = (input) => {
-    if (!error() && input) {
-      $screen.textContent = $screen.textContent + input;
+
+  const append = (input) => {
+    if (noError() && input) {
+      $screen.textContent += input
+      return true
     }
+    return false;
   };
 
-  const filtered = (button) => isNumber(button) || isOperator(button);
-
-  const isClear = (button) => (button === 'C' || button === 'Escape' || button === 'Clear');
+  const isInput = (input) => (isNumber(input) || isOperator(input)) ? append(input) : false;
+  const isClear = (input) => (input.toUpperCase() === 'C' || input === 'Escape' || input === 'Clear') ? clearScreen() : false;  
+  const isEquals = (input) => (input === '=' || input === 'Enter') ? evaluate() : false;
+  const isNumber = (input) => input.match(/[0-9]/);
   
-  const isEquals = (button) => (button === '=' || button === 'Enter');
-
-  const isNumber = (button) => ('0123456789').includes(button) ? button : false;
-
-  const isOperator = (button) => {
-    const operators = {
+  const isOperator = (input) => ({
       '+': '+',
       '-': '-',
-      'x': 'x', 
+      'x': 'x',
       '*': '*',
       '/': '/',
       '÷': '÷',
       '.': '.'
-    };
+    })[input];
 
-    return operators[button];
-  };
-
-  const doMath = (expression) => {
+  const evaluated = (expression) => {
     const [a, operator, b] = expression.match(/[^\d()]+|[\d.]+/g);  // no idea how this regex works
 
-    const math = {
+    return {
       '+': (a, b) => +a + +b,
       '-': (a, b) => +a - +b,
       '*': (a, b) => +a * +b,
       'x': (a, b) => +a * +b,
       '/': (a, b) => +a / +b,
       '÷': (a, b) => +a / +b
-    };
-
-    const result = math[operator](a, b);
-    
-    return result.toString().substring(0,12);
+    }[operator](a, b).toString().substring(0,12);
   };
 });
